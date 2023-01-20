@@ -147,5 +147,8 @@ router.get("/offer/:id", async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 });
+router.get("/", (req, res) => {
+  res.json({ message: "Welcome to my project" });
+});
 
 module.exports = router;
