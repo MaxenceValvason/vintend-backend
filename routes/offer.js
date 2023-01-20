@@ -17,9 +17,7 @@ router.post(
   isAuthenticated,
   async (req, res) => {
     try {
-      // const user = await User.findById(req.user.id);
       const offerPicture = req.files.picture;
-
       const { title, description, price, condition, city, brand, size, color } =
         req.body;
       const newOffer = await new Offer({
@@ -35,13 +33,15 @@ router.post(
         ],
         owner: req.user,
       });
-      const resultOfferPicture = await cloudinary.uploader.upload(
-        convertToBase64(offerPicture),
-        {
-          folder: `/vinted/offers/${newOffer.id}`,
-        }
-      );
-      newOffer.product_image = resultOfferPicture;
+      for (let i = 0; i < offerPicture.length; i++) {
+        const resultOfferPicture = await cloudinary.uploader.upload(
+          convertToBase64(offerPicture[i]),
+          {
+            folder: `/vinted/offers/${newOffer.id}`,
+          }
+        );
+        newOffer.product_pictures = resultOfferPicture[i];
+      }
       await newOffer.save();
       res.json(newOffer);
     } catch (error) {
